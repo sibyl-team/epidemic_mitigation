@@ -1,6 +1,18 @@
 # epidemic_mitigation
 
-Test repository for compare intervention algorithms on openABM simulations of epidemic cascades
+epidemic_mitigation is a framework to test the perfomances of scoring algorithms that could be used to improve the identification of infected individuals using digital contact tracing data.  
+
+We employ realistic individual-based models ([OpenABM-Covid19](https://github.com/BDI-pathogens/OpenABM-Covid19)) to investigate a number of intervention strategies aiming at containing epidemic outbreaks, such as case-based measures (e.g. individual and household quarantine and mobility restrictions).  
+
+[OpenABM-Covid19](https://github.com/BDI-pathogens/OpenABM-Covid19) is an agent-based model (ABM) developed by Oxford's [Fraser group](https://www.coronavirus-fraser-group.org/) to simulate the spread of Covid-19 in a urban population.
+
+An Intervention API that allows testing of risk assessment and quarantine strategies can be found at the following link: https://github.com/aleingrosso/OpenABM-Covid19.  
+
+In the following figure the evolution daily infected infected individuals are shown. Each day 200 tests are performed using the scoring algorithms. The best perfomances are obtained by the sib_ranker. For more information see [paper]().
+<p align="center">
+  <img src="./examples/figs/anim_50K_log.gif">
+</p>
+
 
 ### Install
 * install the [openABM](https://github.com/aleingrosso/OpenABM-Covid19) fork.
@@ -13,10 +25,10 @@ Test repository for compare intervention algorithms on openABM simulations of ep
 * sib_rank - authors: [sibyl-team](mailto:sibylteam@gmail.com?subject=[GitHub]%20Source%20sibilla)
 * mean_field_rank - authors: [sphinxteam](https://github.com/sphinxteam/sir_inference) 
 
-Have a look the the ´src/loop_ranker/template_ranker.py` to design your class.
+Have a look to the [template_ranker](https://github.com/sibyl-team/epidemic_mitigation/blob/master/src/loop_ranker/template_ranker.py) to design your class.
 
 ## Contributions
-If you want to participate write us ([sibyl-team](mailto:sibylteam@gmail.com?subject=[GitHub]%20Source%20sibilla)) or make a pull request.
+If you want to contribute write us ([sibyl-team](mailto:sibylteam@gmail.com?subject=[GitHub]%20Source%20sibilla)) or make a pull request.
 
 ## License
 [Apache License 2.0](LICENSE)
@@ -32,8 +44,7 @@ The [sibyl-team](https://github.com/sibyl-team):
 </p>
 
 ## Acknowledgements
-This project has been partially funded by Fondazione CRT through call "La Ricerca dei Talenti", project SIBYL.
-This work has been partially supported by the [SmartData@PoliTO] (http://smartdata.polito.it) center on Big Data and Data Science.
+This project has been partially funded by Fondazione CRT through call "La Ricerca dei Talenti", project SIBYL, and by the [SmartData@PoliTO] (http://smartdata.polito.it) center on Big Data and Data Science.
 <p float="left">
 <img src="examples/figs/fcrt-logo.png" width="200" height="52">
 <img src="examples/figs/smartData_logo.png" width="200" height="52">
