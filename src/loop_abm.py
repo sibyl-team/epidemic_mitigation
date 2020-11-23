@@ -211,7 +211,9 @@ def loop_abm(params,
 
         ### quarantine infected individuals
         num_quarantined += len(to_quarantine)
-        covid19.intervention_quarantine_list(model.model.c_model, to_quarantine, T+1)
+        interv_res = covid19.intervention_quarantine_list(model.model.c_model, to_quarantine, T+1)
+        interv_res = np.array(interv_res).astype(bool)
+        
             
         ### update observations
         daily_obs = [(int(i), int(f_state[i]), int(t)) for i in all_test]
@@ -266,6 +268,13 @@ def loop_abm(params,
         logger.info(f"false+: {fp_num} (+{fp_num_today}), false-: {fn_num} (+{fn_num_today})")
         logger.info(f"...quarantining {len(to_quarantine)} guys -> got {ninfq} infected, {nfree} free as {asbirds} ({nfree-freebirds:+d})")
         freebirds = nfree
+        ### WARN if some nodes are not quarantined
+        if len(to_quarantine) > 0 and np.any(interv_res) == False:
+            #print(to_quarantine,interv_res)
+            indicis_err = np.where(interv_res == False)[0]
+            logger.warn("NOT QUARANTINING nodes {} / {}".format(len(indicis_err), len(to_quarantine)))
+            if len(indicis_err) > 20:
+                raise ValueError("Too many errors")
 
         ### callback
         callback(data)
