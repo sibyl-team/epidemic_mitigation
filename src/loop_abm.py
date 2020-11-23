@@ -36,7 +36,8 @@ def loop_abm(params,
              fn_rate = 0.0,
              smartphone_users_abm = False, # if True use app users fraction from OpenABM model
              callback = lambda x : None,
-             data = {}
+             data = {},
+             lockdown_start_t = None
             ):
     '''
     Simulate interventions strategy on the openABM epidemic simulation.
@@ -92,6 +93,7 @@ def loop_abm(params,
     for name in ["num_quarantined", "q_SS", "q_SM", "q_algo", "q_random", "q_all", "infected_free", "S", "I", "R", "IR", "aurI", "prec1%", "prec5%", "test_+", "test_-", "test_f+", "test_f-"]:
         data[name] = np.full(T,np.nan)
     data["logger"] = logger
+    data["lockdown_on"] = np.zeros(T,dtype=np.int8)
 
     
     ### init inference algo
@@ -183,7 +185,7 @@ def loop_abm(params,
         
         weighted_contacts = [(c[0], c[1], c[2], 2.0 if c[3] == 0 else 1.0) for c in daily_contacts if (has_app[c[0]] and has_app[c[1]])]
         if nfree == 0 and quarantine_HH:
-            print("faster end")
+            logger.info("No more free individuals")
             rank_algo = np.zeros((N,2))
             rank_algo[:, 0]=np.arange(N)
             rank_algo[:, 1]=np.random.rand(N)
@@ -229,6 +231,7 @@ def loop_abm(params,
         data_states["tested_SS"].append(SS)
         data_states["tested_SM"].append(SM)
         data_states["statuses"][t] = status
+        data["lockdown_on"][t] =  model.model.get_param("lockdown_on")
         data["S"][t] = nS
         data["I"][t] = nI
         data["R"][t] = nR
@@ -282,6 +285,9 @@ def loop_abm(params,
         if t % save_every_iter == 0:
             df_save = pd.DataFrame.from_records(data, exclude=["logger"])
             df_save.to_csv(output_dir + name_file_res + "_res.gz")
+        if lockdown_start_t is not None and lockdown_start_t == t:
+            logger.warn("Starting lockdown")
+            sim.env.model.update_running_params("lockdown_on", True)
 
     # save files
     df_save = pd.DataFrame.from_records(data, exclude=["logger"])
@@ -310,8 +316,8 @@ def free_abm(params,
              save_every_iter = 5,
              stop_zero_I = True,
              data = {},
-             callback = lambda data : None
-            ):    
+             callback = lambda data : None,
+            ):
     '''
     Simulate the openABM epidemic simulation with no intervention strategy
 
