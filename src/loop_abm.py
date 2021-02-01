@@ -159,7 +159,7 @@ def loop_abm(params,
                     p_num_today += 1
                     if state[i] != 1:
                         fp_num_today += 1
-                    q = [j for j in housedict[house[i]] if not excluded_now[j]] if quarantine_HH else [i]
+                    q = housedict[house[i]] if quarantine_HH else [i]
                     excluded_now[q] = True
                     to_quarantine += q
                     excluded[q] = True
